@@ -1,0 +1,13 @@
+{
+    "name": "orphans/satellite",
+    "description": "A collection of developer tools for WordPress projects",
+    "type": "wordpress-plugin",
+    "license": "GPL",
+    "autoload": {
+        "psr-4": {
+            "Orphans\\Satellite\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
