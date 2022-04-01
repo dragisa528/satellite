@@ -4,7 +4,7 @@ publish:
   image: curlimages/curl:latest
   stage: build
   tags:
-    - drupal
+    - wordpress
   variables:
     URL: "$CI_SERVER_PROTOCOL://$CI_SERVER_HOST:$CI_SERVER_PORT/api/v4/projects/$CI_PROJECT_ID/packages/composer?job_token=$CI_JOB_TOKEN"
   script:
