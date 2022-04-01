@@ -12,4 +12,5 @@
  * @package         Satellite
  */
 
-// Your code starts here.
+
+new Orphans\Satellite\RemoteFiles;
