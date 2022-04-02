@@ -30,6 +30,13 @@ class RemoteFiles {
 	 */
 	function __construct() {
 
+		// Don't activate if constant `SATELLITE_PRODUCTION_URL` is not set
+		if ( ! defined( 'SATELLITE_PRODUCTION_URL' ) || empty( SATELLITE_PRODUCTION_URL ) ) {
+			return;
+		}
+
+		$this->production_url = $this->get_production_url();
+
 		// Update Image URLs
 		add_filter( 'wp_get_attachment_image_src', array( $this, 'image_src' ) );
 		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'image_attr' ), 99 );
@@ -147,7 +154,7 @@ class RemoteFiles {
 			return $image_url;
 		}
 
-		$production_url = esc_url( $this->get_production_url() );
+		$production_url = esc_url( $this->production_url );
 		if ( empty( $production_url ) ) {
 			return $image_url;
 		}
@@ -168,7 +175,7 @@ class RemoteFiles {
 			return $image_url;
 		}
 
-		$production_url = esc_url( $this->get_production_url() );
+		$production_url = esc_url( $this->production_url );
 		if ( empty( $production_url ) ) {
 			return $image_url;
 		}
@@ -179,16 +186,8 @@ class RemoteFiles {
 
 	/**
 	 * Return the production URL
-	 *
-	 * First, this method checks if constant `SATELLITE_PRODUCTION_URL`
-	 * exists and non-empty. Then applies a filter `satellite_url`.
 	 */
 	public function get_production_url(): string {
-		$production_url = $this->production_url;
-		if ( defined( 'SATELLITE_PRODUCTION_URL' ) && SATELLITE_PRODUCTION_URL ) {
-			$production_url = SATELLITE_PRODUCTION_URL;
-		}
-
-		return apply_filters( 'satellite_url', $production_url );
+		return apply_filters( 'satellite_url', SATELLITE_PRODUCTION_URL );
 	}
 }
