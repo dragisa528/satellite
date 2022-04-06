@@ -1,7 +1,7 @@
 {
     "name": "orphans/satellite",
     "description": "A collection of developer tools for WordPress projects",
-    "type": "wordpress-plugin",
+    "type": "wordpress-muplugin",
     "license": "GPL",
     "autoload": {
         "psr-4": {
