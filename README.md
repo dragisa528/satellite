@@ -3,16 +3,41 @@ adapt the following as necessary.
 
 ## RemoteFiles
 
-Add the website's remote URL to `config/environments/development.php` to load user-uploaded files without 
-syncing them to your development environemnt.
+This plugin will remote-load uploaded files without having to sync them to your development environment. Note this only works when `WP_ENV=development` and will silently deactivate when that is not the case, or when the following config is not in place. 
+
+You must have the following set in `config/environments/development.php` or `.env`. If both are set, `.env` will take precedence. This allows you to override project defaults without affecting other developers.
 
 ```php
 Config::define('SATELLITE_PRODUCTION_URL', 'https://example.com');
 ```
 
+or
+
+```dotenv
+SATELLITE_PRODUCTION_URL=https://example.com
+```
+
 ## Sync
 
-The command `wp sync` can be used to update your local environment using remote content. This can only be run when WP_ENV == "development".
+The command `wp sync` can be used to update your local environment using remote content. This can only be run when `WP_ENV=development`.
+
+You must have the following set in `config/environments/development.php` or `.env`. If both are set, `.env` will take precedence. This allows you to override project defaults without affecting other developers.
+
+```php
+Config::define('SATELLITE_SSH_HOST', 'website.example.com');
+Config::define('SATELLITE_SSH_USER', 'username');
+Config::define('SATELLITE_SSH_PATH', '/path/to/remote/website');
+```
+
+or
+
+```dotenv
+SATELLITE_SSH_HOST=website.example.com
+SATELLITE_SSH_USER=username
+SATELLITE_SSH_PATH=/path/to/remote/website
+```
+
+Command examples:
 
 ```bash
 # Simple, just applies plugin overrides 
