@@ -7,16 +7,16 @@ use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
 use WP_CLI;
 use function Env\env;
 
-class Sync
+class WP_Command
 {
-    private $options = [
+    private array $options = [
         'database' => false,
         'uploads' => false,
         'active_plugins' => true,
         'inactive_plugins' => true,
     ];
 
-    private $settings = [
+    private array $settings = [
         'ssh_host' => null,
         'ssh_user' => null,
         'ssh_path' => null,
@@ -35,7 +35,7 @@ class Sync
      *
      * ## EXAMPLES
      *
-     *     wp sync --database --files
+     *     wp satellite --database --files
      *
      * @when after_wp_load
      */
@@ -48,8 +48,6 @@ class Sync
         if (!$this->hasAllSettings()) {
             WP_CLI::error('You are missing some config settings in your environment. Please refer to the plugin\'s README.md.');
         }
-
-        var_dump($this->settings);
 
         $this->getOptions($assoc_args);
 
@@ -112,31 +110,34 @@ class Sync
         }
     }
 
+    private function printActionTitle(string $title)
+    {
+        WP_CLI::line(WP_CLI::colorize('%b'));
+        WP_CLI::line(strtoupper($title));
+        WP_CLI::line(WP_CLI::colorize(str_pad('', strlen($title), '~') . '%n'));
+    }
+
     private function fetchDatabase()
     {
-        WP_CLI::line();
-        WP_CLI::line('Fetching database');
-        WP_CLI::line('=================');
+        $this->printActionTitle('Fetching database');
+        WP_CLI::line(WP_CLI::colorize('%y// todo%n'));
     }
 
     private function fetchUploads()
     {
-        WP_CLI::line();
-        WP_CLI::line('Fetching uploads');
-        WP_CLI::line('================');
+        $this->printActionTitle('Fetching uploads');
+        WP_CLI::line(WP_CLI::colorize('%y// todo%n'));
     }
 
     private function activatePlugins()
     {
-        WP_CLI::line();
-        WP_CLI::line('Activating Plugins');
-        WP_CLI::line('==================');
+        $this->printActionTitle('Activating Plugins');
+        WP_CLI::line(WP_CLI::colorize('%y// todo%n'));
     }
 
     private function deactivatePlugins()
     {
-        WP_CLI::line();
-        WP_CLI::line('Deactivating Plugins');
-        WP_CLI::line('====================');
+        $this->printActionTitle('Deactivating Plugins');
+        WP_CLI::line(WP_CLI::colorize('%y// todo%n'));
     }
 }

@@ -17,9 +17,9 @@ or
 SATELLITE_PRODUCTION_URL=https://example.com
 ```
 
-## Sync
+## WP Command
 
-The command `wp sync` can be used to update your local environment using remote content. This can only be run when `WP_ENV=development`.
+The command `wp satellite` can be used to update your local environment using remote content. This can only be run when `WP_ENV=development`.
 
 You must have the following set in `config/environments/development.php` or `.env`. If both are set, `.env` will take precedence. This allows you to override project defaults without affecting other developers.
 
@@ -41,16 +41,16 @@ Command examples:
 
 ```bash
 # Simple, just applies plugin overrides 
-wp sync
+wp satellite
 
 # Database mode, downloads a fresh copy of the remove database (overwriting all local data) and applies plugin overrides 
-wp sync --database
+wp satellite --database
 
 # Uploads mode, downloads a fresh copy of uploads directory (overwriting all local files) and applies plugin overrides 
-wp sync --uploads
+wp satellite --uploads
 
 # All of the above 
-wp sync --database --uploads
+wp satellite --database --uploads
 ```
 
-Note that `--uploads` is usually necessary if remote files are enabled as specified above.
+Note that `--uploads` is usually unnecessary if remote files are enabled as specified above.
