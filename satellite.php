@@ -13,5 +13,7 @@
  * @package         Satellite
  */
 
+use Orphans\Satellite\RemoteFiles;
 
-new Orphans\Satellite\RemoteFiles;
+// Init the class that loads remote files in place of storing them locally
+new RemoteFiles;
