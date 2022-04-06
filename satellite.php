@@ -14,6 +14,11 @@
  */
 
 use Orphans\Satellite\RemoteFiles;
+use Orphans\Satellite\Sync;
 
 // Init the class that loads remote files in place of storing them locally
 new RemoteFiles;
+
+// Tell wp-cli about our `sync` command
+$sync = new Sync();
+WP_CLI::add_command('sync', [$sync, 'run']);
