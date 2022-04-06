@@ -2,6 +2,10 @@
 
 namespace Orphans\Satellite;
 
+use Roots\WPConfig\Config;
+use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
+use function Env\env;
+
 /**
  * This class is built upon BE Media from Production so all due credit to those authors.
  * http://www.github.com/billerickson/be-media-from-production
@@ -18,7 +22,7 @@ class RemoteFiles
     /**
      * Production URL
      */
-    public string $production_url = '';
+    public ?string $production_url = null;
 
     /**
      * Holds list of upload directories
@@ -31,12 +35,15 @@ class RemoteFiles
      */
     public function __construct()
     {
-        // Don't activate if constant `SATELLITE_PRODUCTION_URL` is not set
-        if (! defined('SATELLITE_PRODUCTION_URL') || empty(SATELLITE_PRODUCTION_URL)) {
+        // Development only
+        if (WP_ENV !== 'development') {
             return;
         }
 
         $this->production_url = $this->get_production_url();
+        if (!$this->production_url) {
+            return;
+        }
 
         // Update Image URLs
         add_filter('wp_get_attachment_image_src', array( $this, 'image_src' ));
@@ -197,8 +204,13 @@ class RemoteFiles
     /**
      * Return the production URL
      */
-    public function get_production_url(): string
+    public function get_production_url(): ?string
     {
-        return apply_filters('satellite_url', SATELLITE_PRODUCTION_URL);
+        try {
+            $production_url = env('SATELLITE_PRODUCTION_URL') ?: Config::get('SATELLITE_PRODUCTION_URL');
+        } catch (UndefinedConfigKeyException $e) {
+            return null;
+        }
+        return apply_filters('satellite_url', $production_url);
     }
 }
