@@ -16,7 +16,7 @@ class SatelliteCLI extends WP_CLI_Command
     }
 
     /**
-     * Prepares development environment and optionally fetches remote database & uploaded files.
+     * Prepares development or staging environment and optionally fetches remote database & uploaded files.
      *
      * ## OPTIONS
      *

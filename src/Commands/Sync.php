@@ -26,7 +26,7 @@ class Sync
     public function run($args, $assoc_args)
     {
         if (!$this->isSafeEnvironment()) {
-            WP_CLI::error('This can only be run in a development environment. Check your WP_ENV setting.');
+            WP_CLI::error('This can only be run in a development and staging environments. Check your WP_ENV setting.');
         }
 
         if (!$this->hasAllSettings()) {
@@ -56,11 +56,11 @@ class Sync
     }
 
     /**
-     * Development use only
+     * Development and staging use only
      */
     private function isSafeEnvironment(): bool
     {
-        return WP_ENV === 'development';
+        return WP_ENV === 'development' || WP_ENV === 'staging';
     }
 
     /**
