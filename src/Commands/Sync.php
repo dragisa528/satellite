@@ -1,13 +1,13 @@
 <?php
 
-namespace Orphans\Satellite;
+namespace Orphans\Satellite\Commands;
 
 use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
 use WP_CLI;
 use function Env\env;
 
-class WP_Command
+class Sync
 {
     private array $options = [
         'database' => false,
@@ -22,23 +22,6 @@ class WP_Command
         'ssh_path' => null,
     ];
 
-    /**
-     * Prepares development environment and optionally fetches remote database & uploaded files.
-     *
-     * ## OPTIONS
-     *
-     * [--database]
-     * : Fetch the remote database
-     *
-     * [--uploads]
-     * : Fetch the remote uploaded files
-     *
-     * ## EXAMPLES
-     *
-     *     wp satellite --database --files
-     *
-     * @when after_wp_load
-     */
     public function run($args, $assoc_args)
     {
         if (!$this->isSafeEnvironment()) {

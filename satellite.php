@@ -14,11 +14,9 @@
  */
 
 use Orphans\Satellite\RemoteFiles;
-use Orphans\Satellite\WP_Command;
 
 // Init the class that loads remote files in place of storing them locally
 new RemoteFiles;
 
 // Tell wp-cli about our `satellite` command
-$wp_command = new WP_Command();
-WP_CLI::add_command('satellite', [$wp_command, 'run']);
+WP_CLI::add_command('satellite', 'Orphans\Satellite\SatelliteCLI');
