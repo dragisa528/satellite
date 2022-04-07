@@ -18,6 +18,7 @@ class Sync
 
     private array $settings = [
         'ssh_host' => null,
+        'ssh_port' => '22',
         'ssh_user' => null,
         'ssh_path' => null,
     ];
@@ -74,6 +75,18 @@ class Sync
         } catch (UndefinedConfigKeyException $e) {
             return false;
         }
+
+        // Special case for SSH port
+        try {
+            $ssh_port = env('SATELLITE_SSH_PORT') ?: Config::get('SATELLITE_SSH_PORT');
+            $this->settings['ssh_port'] = strval($ssh_port);
+            if (!preg_match('/^[0-9]+$/', $this->settings['ssh_port'])) {
+                $this->settings['ssh_port'] = null;
+            }
+        } catch (UndefinedConfigKeyException $e) {
+            // Do nothing
+        }
+
         foreach ($this->settings as $setting) {
             if (empty($setting)) {
                 return false;
