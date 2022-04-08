@@ -2,9 +2,9 @@
 
 namespace Orphans\Satellite;
 
+use Orphans\Satellite\Traits\EnvReader;
 use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
-use function Env\env;
 
 /**
  * This class is built upon BE Media from Production so all due credit to those authors.
@@ -18,6 +18,7 @@ if (! defined('ABSPATH')) {
 
 class RemoteFiles
 {
+    use EnvReader;
 
     /**
      * Production URL
@@ -207,7 +208,7 @@ class RemoteFiles
     public function get_production_url(): ?string
     {
         try {
-            $production_url = env('SATELLITE_PRODUCTION_URL') ?: Config::get('SATELLITE_PRODUCTION_URL');
+            $production_url = $this->env('SATELLITE_PRODUCTION_URL') ?: Config::get('SATELLITE_PRODUCTION_URL');
         } catch (UndefinedConfigKeyException $e) {
             return null;
         }

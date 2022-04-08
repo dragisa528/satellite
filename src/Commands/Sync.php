@@ -2,13 +2,15 @@
 
 namespace Orphans\Satellite\Commands;
 
+use Orphans\Satellite\Traits\EnvReader;
 use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
 use WP_CLI;
-use function Env\env;
 
 class Sync
 {
+    use EnvReader;
+
     private array $options = [
         'database' => false,
         'uploads' => false,
@@ -69,16 +71,16 @@ class Sync
     private function hasAllSettings(): bool
     {
         try {
-            $this->settings['ssh_host'] = env('SATELLITE_SSH_HOST') ?: Config::get('SATELLITE_SSH_HOST');
-            $this->settings['ssh_user'] = env('SATELLITE_SSH_USER') ?: Config::get('SATELLITE_SSH_USER');
-            $this->settings['ssh_path'] = env('SATELLITE_SSH_PATH') ?: Config::get('SATELLITE_SSH_PATH');
+            $this->settings['ssh_host'] = $this->env('SATELLITE_SSH_HOST') ?: Config::get('SATELLITE_SSH_HOST');
+            $this->settings['ssh_user'] = $this->env('SATELLITE_SSH_USER') ?: Config::get('SATELLITE_SSH_USER');
+            $this->settings['ssh_path'] = $this->env('SATELLITE_SSH_PATH') ?: Config::get('SATELLITE_SSH_PATH');
         } catch (UndefinedConfigKeyException $e) {
             return false;
         }
 
         // Special case for SSH port
         try {
-            $ssh_port = env('SATELLITE_SSH_PORT') ?: Config::get('SATELLITE_SSH_PORT');
+            $ssh_port = $this->env('SATELLITE_SSH_PORT') ?: Config::get('SATELLITE_SSH_PORT');
             $this->settings['ssh_port'] = strval($ssh_port);
             if (!preg_match('/^[0-9]+$/', $this->settings['ssh_port'])) {
                 $this->settings['ssh_port'] = null;
