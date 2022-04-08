@@ -2,6 +2,7 @@
 
 namespace Orphans\Satellite;
 
+use Orphans\Satellite\Traits\EnvReader;
 use function Env\env;
 
 /**
@@ -10,6 +11,7 @@ use function Env\env;
  * routes to a local mailcatcher instance if available.
  */
 class MailCatcher {
+    use EnvReader;
 
 	private $host;
 	private $port;
@@ -29,12 +31,12 @@ class MailCatcher {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->host       = env( 'SATELLITE_SMTP_HOST' ) ?? '127.0.0.1';
-		$this->port       = env( 'SATELLITE_SMTP_PORT' ) ?? 1025;
-		$this->encryption = env( 'SATELLITE_SMTP_ENCRYPTION' ) ?? false;
-		$this->auth       = env( 'SATELLITE_SMTP_AUTH' ) ?? false;
-		$this->username   = env( 'SATELLITE_SMTP_USERNAME' ) ?? false;
-		$this->Password   = env( 'SATELLITE_SMTP_PASSWORD' ) ?? false;
+		$this->host       = $this->env( 'SATELLITE_SMTP_HOST' ) ?? '127.0.0.1';
+		$this->port       = $this->env( 'SATELLITE_SMTP_PORT' ) ?? 1025;
+		$this->encryption = $this->env( 'SATELLITE_SMTP_ENCRYPTION' ) ?? false;
+		$this->auth       = $this->env( 'SATELLITE_SMTP_AUTH' ) ?? false;
+		$this->username   = $this->env( 'SATELLITE_SMTP_USERNAME' ) ?? false;
+		$this->Password   = $this->env( 'SATELLITE_SMTP_PASSWORD' ) ?? false;
 
 		add_action( 'phpmailer_init', [ $this, 'phpmailerInit' ], 999 );
 		add_action( 'admin_init', [ $this, 'disablePlugins' ], 999 );
