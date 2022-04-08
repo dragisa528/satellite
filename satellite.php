@@ -14,9 +14,13 @@
  */
 
 use Orphans\Satellite\RemoteFiles;
+use Orphans\Satellite\MailCatcher;
 
 // Init the class that loads remote files in place of storing them locally
 new RemoteFiles;
+
+// Init the class that runs the mailcatcher
+new MailCatcher;
 
 // Tell wp-cli about our `satellite` command
 WP_CLI::add_command('satellite', 'Orphans\Satellite\SatelliteCLI');
