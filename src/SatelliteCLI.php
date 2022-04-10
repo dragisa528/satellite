@@ -8,13 +8,6 @@ use WP_CLI_Command;
 
 class SatelliteCLI extends WP_CLI_Command
 {
-    public function __construct()
-    {
-        if (!is_plugin_active('satellite/satellite.php')) {
-            WP_CLI::error('Satellite is not enabled.');
-        }
-    }
-
     /**
      * Prepares development or staging environment and optionally fetches remote database & uploaded files.
      *
