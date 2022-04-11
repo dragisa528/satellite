@@ -58,8 +58,12 @@ class RemoteFiles
     /**
      * Modify Main Image URL
      */
-    public function image_src(array $image): array
+    public function image_src($image)
     {
+        if (empty($image)) {
+            return $image;
+        }
+
         if (isset($image[0])) {
             $image[0] = $this->update_image_url($image[0]);
         }
