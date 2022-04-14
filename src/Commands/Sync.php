@@ -191,7 +191,7 @@ class Sync
 
         $pipe = $this->settings['has_pv'] ? ' | pv | ' : ' | ';
         $command = "{$this->settings['ssh_command']} \"bash -c \\\"cd {$this->settings['ssh_path']} && ./vendor/bin/wp db export --quiet --single-transaction - | gzip -cf\\\"\" {$pipe} gunzip -c | ./vendor/bin/wp db import --quiet -";
-        // system($command);
+        system($command);
     }
 
     private function enableStripeTestMode()
@@ -256,7 +256,6 @@ class Sync
 
     private function isPluginInstalled($plugin_slug): bool
     {
-        ray(get_plugins());
         $installed_plugins = get_plugins();
         return array_key_exists($plugin_slug, $installed_plugins) || in_array($plugin_slug, $installed_plugins, true);
     }
