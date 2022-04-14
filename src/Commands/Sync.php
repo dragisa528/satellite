@@ -47,6 +47,7 @@ class Sync
 
         if ($this->options['database']) {
             $this->fetchDatabase();
+            $this->enableStripeTestMode();
         }
 
         if ($this->options['uploads']) {
@@ -187,11 +188,20 @@ class Sync
     private function fetchDatabase()
     {
         $this->printActionTitle('Fetching database');
-        WP_CLI::line(WP_CLI::colorize('%y// todo: post-sync queries%n'));
 
         $pipe = $this->settings['has_pv'] ? ' | pv | ' : ' | ';
         $command = "{$this->settings['ssh_command']} \"bash -c \\\"cd {$this->settings['ssh_path']} && ./vendor/bin/wp db export --quiet --single-transaction - | gzip -cf\\\"\" {$pipe} gunzip -c | ./vendor/bin/wp db import --quiet -";
-        system($command);
+        // system($command);
+    }
+
+    private function enableStripeTestMode()
+    {
+        if ($this->isPluginInstalledAndActive('woocommerce-gateway-stripe/woocommerce-gateway-stripe.php')) {
+            WP_CLI::line('Enabling Stripe test mode');
+            $option = get_option('woocommerce_stripe_settings');
+            $option['testmode'] = 'yes';
+            update_option('woocommerce_stripe_settings', $option);
+        }
     }
 
     private function fetchUploads()
