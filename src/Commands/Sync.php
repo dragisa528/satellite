@@ -209,12 +209,8 @@ class Sync
         $this->printActionTitle('Activating Plugins');
 
         foreach ($this->settings['plugins']['activate'] as $plugin) {
-            $command = "wp plugin is-installed {$plugin}";
-            exec($command, $output, $retval);
-            if ($retval === 0) {
-                $command = "wp plugin is-active {$plugin}";
-                exec($command, $output, $retval);
-                if ($retval !== 0) {
+            if ($this->isPluginInstalled($plugin)) {
+                if (!$this->isPluginActive($plugin)) {
                     $command = "wp plugin activate {$plugin}";
                     system($command);
                 } else {
@@ -235,12 +231,8 @@ class Sync
         $this->printActionTitle('Deactivating Plugins');
 
         foreach ($this->settings['plugins']['deactivate'] as $plugin) {
-            $command = "wp plugin is-installed {$plugin}";
-            exec($command, $output, $retval);
-            if ($retval === 0) {
-                $command = "wp plugin is-active {$plugin}";
-                exec($command, $output, $retval);
-                if ($retval === 0) {
+            if ($this->isPluginInstalled($plugin)) {
+                if ($this->isPluginActive($plugin)) {
                     $command = "wp plugin deactivate {$plugin}";
                     system($command);
                 } else {
@@ -250,5 +242,25 @@ class Sync
                 WP_CLI::warning("Plugin {$plugin} is not available to deactivate");
             }
         }
+    }
+
+    private function isPluginInstalled($plugin_slug): bool
+    {
+        ray(get_plugins());
+        $installed_plugins = get_plugins();
+        return array_key_exists($plugin_slug, $installed_plugins) || in_array($plugin_slug, $installed_plugins, true);
+    }
+
+    private function isPluginActive($plugin_slug): bool
+    {
+        if (is_plugin_active($plugin_slug)) {
+            return true;
+        }
+        return false;
+    }
+
+    private function isPluginInstalledAndActive($plugin_slug): bool
+    {
+        return $this->isPluginInstalled($plugin_slug) && $this->isPluginInstalled($plugin_slug);
     }
 }
