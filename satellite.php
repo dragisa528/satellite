@@ -13,14 +13,32 @@
  * @package         Satellite
  */
 
-use Orphans\Satellite\RemoteFiles;
-use Orphans\Satellite\MailCatcher;
+use Satellite\MailCatcher\MailCatcher;
+use Satellite\RemoteFiles\RemoteFiles;
 
-// Init the class that loads remote files in place of storing them locally
-new RemoteFiles;
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-// Init the class that runs the mailcatcher
-new MailCatcher;
+spl_autoload_register(
+	function ( $class_name ) {
+		$path_parts = explode( '\\', $class_name );
+
+		if ( ! empty( $path_parts ) ) {
+			$package = $path_parts[0];
+
+			unset( $path_parts[0] );
+
+			if ( 'Orbit' === $package ) {
+				require_once __DIR__ . '/includes/classes/' . implode( '/', $path_parts ) . '.php';
+			}
+		}
+	}
+);
+
+RemoteFiles::instance()->setup();
+MailCatcher::instance()->setup();
 
 // Tell wp-cli about our `satellite` command
-WP_CLI::add_command('satellite', 'Orphans\Satellite\SatelliteCLI');
+WP_CLI::add_command( 'satellite', 'Satellite\SatelliteCLI' );
