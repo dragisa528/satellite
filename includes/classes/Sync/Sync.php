@@ -29,35 +29,35 @@ class Sync {
 	];
 
 	public function run( $args, $assoc_args ) {
-		if ( ! $this->isSafeEnvironment() ) {
+		if ( ! $this->is_safe_environment() ) {
 			WP_CLI::error( 'This can only be run in a development and staging environments. Check your WP_ENV setting.' );
 		}
 
-		if ( ! $this->hasAllSettings() ) {
+		if ( ! $this->has_all_settings() ) {
 			WP_CLI::error( 'You are missing some config settings in your environment. Please refer to the plugin\'s README.md.' );
 		}
 
-		if ( ! $this->hasRemoteAccess() ) {
+		if ( ! $this->has_remote_access() ) {
 			WP_CLI::error( 'Cannot access remote website. Please check your connection settings.' );
 		}
 
-		$this->getOptions( $assoc_args );
+		$this->get_options( $assoc_args );
 
 		if ( $this->options['database'] ) {
-			$this->fetchDatabase();
-			$this->enableStripeTestMode();
+			$this->fetch_database();
+			$this->enable_stripe_test_mode();
 		}
 
 		if ( $this->options['uploads'] ) {
-			$this->fetchUploads();
+			$this->fetch_uploads();
 		}
 
 		if ( $this->options['active_plugins'] ) {
-			$this->activatePlugins();
+			$this->activate_plugins();
 		}
 
 		if ( $this->options['inactive_plugins'] ) {
-			$this->deactivatePlugins();
+			$this->deactivate_plugins();
 		}
 
 		WP_CLI::line();
@@ -67,14 +67,14 @@ class Sync {
 	/**
 	 * Development and staging use only
 	 */
-	private function isSafeEnvironment(): bool {
+	private function is_safe_environment(): bool {
 		return WP_ENV === 'development' || WP_ENV === 'staging';
 	}
 
 	/**
 	 * Load settings from .env or config (.env takes precedence)
 	 */
-	private function hasAllSettings(): bool {
+	private function has_all_settings(): bool {
 		try {
 			$this->settings['ssh_host'] = $this->env( 'SATELLITE_SSH_HOST' ) ?: Config::get( 'SATELLITE_SSH_HOST' );
 			$this->settings['ssh_user'] = $this->env( 'SATELLITE_SSH_USER' ) ?: Config::get( 'SATELLITE_SSH_USER' );
@@ -142,7 +142,7 @@ class Sync {
 		return true;
 	}
 
-	private function getOptions( $assoc_args ) {
+	private function get_options( $assoc_args ) {
 		$true_values = [ true, 'true', 1, '1', 'yes' ];
 		if ( isset( $assoc_args['database'] ) ) {
 			$this->options['database'] = in_array( $assoc_args['database'], $true_values, true );
@@ -152,7 +152,7 @@ class Sync {
 		}
 	}
 
-	private function hasRemoteAccess(): bool {
+	private function has_remote_access(): bool {
 		$this->settings['ssh_command'] = "ssh -q -p {$this->settings['ssh_port']} {$this->settings['ssh_user']}@{$this->settings['ssh_host']}";
 
 		# Try SSH
@@ -172,22 +172,22 @@ class Sync {
 		return true;
 	}
 
-	private function printActionTitle( string $title ) {
+	private function print_action_title( string $title ) {
 		WP_CLI::line( WP_CLI::colorize( '%b' ) );
 		WP_CLI::line( strtoupper( $title ) );
 		WP_CLI::line( WP_CLI::colorize( str_pad( '', strlen( $title ), '~' ) . '%n' ) );
 	}
 
-	private function fetchDatabase() {
-		$this->printActionTitle( 'Fetching database' );
+	private function fetch_database() {
+		$this->print_action_title( 'Fetching database' );
 
 		$pipe    = $this->settings['has_pv'] ? ' | pv | ' : ' | ';
 		$command = "{$this->settings['ssh_command']} \"bash -c \\\"cd {$this->settings['ssh_path']} && ./vendor/bin/wp db export --quiet --single-transaction - | gzip -cf\\\"\" {$pipe} gunzip -c | ./vendor/bin/wp db import --quiet -";
 		system( $command );
 	}
 
-	private function enableStripeTestMode() {
-		if ( $this->isPluginInstalledAndActive( 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php' ) ) {
+	private function enable_stripe_test_mode() {
+		if ( $this->is_plugin_installed_and_active( 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php' ) ) {
 			WP_CLI::line( 'Enabling Stripe test mode' );
 			$option             = get_option( 'woocommerce_stripe_settings' );
 			$option['testmode'] = 'yes';
@@ -195,21 +195,21 @@ class Sync {
 		}
 	}
 
-	private function fetchUploads() {
-		$this->printActionTitle( 'Fetching uploads' );
+	private function fetch_uploads() {
+		$this->print_action_title( 'Fetching uploads' );
 		WP_CLI::line( WP_CLI::colorize( '%y// todo%n' ) );
 	}
 
-	private function activatePlugins() {
+	private function activate_plugins() {
 		if ( empty( $this->settings['plugins']['activate'] ) ) {
 			return;
 		}
 
-		$this->printActionTitle( 'Activating Plugins' );
+		$this->print_action_title( 'Activating Plugins' );
 
 		foreach ( $this->settings['plugins']['activate'] as $plugin ) {
-			if ( $this->isPluginInstalled( $plugin ) ) {
-				if ( ! $this->isPluginActive( $plugin ) ) {
+			if ( $this->is_plugin_installed( $plugin ) ) {
+				if ( ! $this->is_plugin_active( $plugin ) ) {
 					$command = "wp plugin activate {$plugin}";
 					system( $command );
 				} else {
@@ -221,16 +221,16 @@ class Sync {
 		}
 	}
 
-	private function deactivatePlugins() {
+	private function deactivate_plugins() {
 		if ( empty( $this->settings['plugins']['deactivate'] ) ) {
 			return;
 		}
 
-		$this->printActionTitle( 'Deactivating Plugins' );
+		$this->print_action_title( 'Deactivating Plugins' );
 
 		foreach ( $this->settings['plugins']['deactivate'] as $plugin ) {
-			if ( $this->isPluginInstalled( $plugin ) ) {
-				if ( $this->isPluginActive( $plugin ) ) {
+			if ( $this->is_plugin_installed( $plugin ) ) {
+				if ( $this->is_plugin_active( $plugin ) ) {
 					$command = "wp plugin deactivate {$plugin}";
 					system( $command );
 				} else {
@@ -242,13 +242,13 @@ class Sync {
 		}
 	}
 
-	private function isPluginInstalled( $plugin_slug ): bool {
+	private function is_plugin_installed( $plugin_slug ): bool {
 		$installed_plugins = get_plugins();
 
 		return array_key_exists( $plugin_slug, $installed_plugins ) || in_array( $plugin_slug, $installed_plugins, true );
 	}
 
-	private function isPluginActive( $plugin_slug ): bool {
+	private function is_plugin_active( $plugin_slug ): bool {
 		if ( is_plugin_active( $plugin_slug ) ) {
 			return true;
 		}
@@ -256,7 +256,7 @@ class Sync {
 		return false;
 	}
 
-	private function isPluginInstalledAndActive( $plugin_slug ): bool {
-		return $this->isPluginInstalled( $plugin_slug ) && $this->isPluginInstalled( $plugin_slug );
+	private function is_plugin_installed_and_active( $plugin_slug ): bool {
+		return $this->is_plugin_installed( $plugin_slug ) && $this->is_plugin_installed( $plugin_slug );
 	}
 }

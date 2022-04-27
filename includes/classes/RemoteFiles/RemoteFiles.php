@@ -23,7 +23,7 @@ class RemoteFiles extends Singleton {
 	 * Holds list of upload directories
 	 * Can set manually here, or allow function below to automatically create it
 	 */
-	public array $directories = array();
+	public array $directories = [];
 
 	/**
 	 * Primary constructor.

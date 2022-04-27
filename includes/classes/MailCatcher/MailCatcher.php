@@ -39,8 +39,8 @@ class MailCatcher extends Singleton {
 		$this->username   = $this->env( 'SATELLITE_SMTP_USERNAME' ) ?? false;
 		$this->Password   = $this->env( 'SATELLITE_SMTP_PASSWORD' ) ?? false;
 
-		add_action( 'phpmailer_init', [ $this, 'phpmailerInit' ], 999 );
-		add_action( 'admin_init', [ $this, 'disablePlugins' ], 999 );
+		add_action( 'phpmailer_init', [ $this, 'phpmailer_init' ], 999 );
+		add_action( 'admin_init', [ $this, 'disable_plugins' ], 999 );
 	}
 
 	/**
@@ -48,7 +48,7 @@ class MailCatcher extends Singleton {
 	 *
 	 * @return bool
 	 */
-	private function isSafeEnvironment(): bool {
+	private function is_safe_environment(): bool {
 		return WP_ENV === 'development';
 	}
 
@@ -59,7 +59,7 @@ class MailCatcher extends Singleton {
 	 *
 	 * @return void
 	 */
-	public function phpmailerInit( \PHPMailer\PHPMailer\PHPMailer $phpmailer ) {
+	public function phpmailer_init( \PHPMailer\PHPMailer\PHPMailer $phpmailer ) {
 
 		$phpmailer->isSMTP();
 		$phpmailer->Host       = $this->host;
@@ -76,9 +76,9 @@ class MailCatcher extends Singleton {
 	 *
 	 * @return void
 	 */
-	public function disablePlugins() {
+	public function disable_plugins() {
 
-		if ( ! $this->isSafeEnvironment() ) {
+		if ( ! $this->is_safe_environment() ) {
 			return;
 		}
 
