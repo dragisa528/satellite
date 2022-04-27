@@ -1,9 +1,9 @@
 <?php
 
-namespace Satellite\MailCatcher;
+namespace Eighteen73\Satellite\MailCatcher;
 
-use Satellite\EnvReader;
-use Satellite\Singleton;
+use Eighteen73\Satellite\EnvReader;
+use Eighteen73\Satellite\Singleton;
 
 /**
  * Local Mail Catcher class.

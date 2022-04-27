@@ -1,8 +1,8 @@
 <?php
 
-namespace Satellite;
+namespace Eighteen73\Satellite;
 
-use Satellite\Sync\Sync;
+use Eighteen73\Satellite\Sync\Sync;
 use WP_CLI;
 use WP_CLI_Command;
 

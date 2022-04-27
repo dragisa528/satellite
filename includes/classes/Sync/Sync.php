@@ -1,8 +1,8 @@
 <?php
 
-namespace Satellite\Sync;
+namespace Eighteen73\Satellite\Sync;
 
-use Satellite\EnvReader;
+use Eighteen73\Satellite\EnvReader;
 use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
 use WP_CLI;

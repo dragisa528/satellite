@@ -1,6 +1,6 @@
 <?php
 
-namespace Satellite;
+namespace Eighteen73\Satellite;
 
 /**
  * Abstract class

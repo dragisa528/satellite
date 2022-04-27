@@ -13,8 +13,8 @@
  * @package         Satellite
  */
 
-use Satellite\MailCatcher\MailCatcher;
-use Satellite\RemoteFiles\RemoteFiles;
+use Eighteen73\Satellite\MailCatcher\MailCatcher;
+use Eighteen73\Satellite\RemoteFiles\RemoteFiles;
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
@@ -41,4 +41,4 @@ RemoteFiles::instance()->setup();
 MailCatcher::instance()->setup();
 
 // Tell wp-cli about our `satellite` command
-WP_CLI::add_command( 'satellite', 'Satellite\SatelliteCLI' );
+WP_CLI::add_command( 'satellite', 'Eighteen73\Satellite\SatelliteCLI' );

@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Satellite\\": "includes/classes/"
+            "Eighteen73\\Satellite\\": "includes/classes/"
         }
     },
     "minimum-stability": "dev",

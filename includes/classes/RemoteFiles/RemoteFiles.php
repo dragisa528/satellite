@@ -1,9 +1,9 @@
 <?php
 
-namespace Satellite\RemoteFiles;
+namespace Eighteen73\Satellite\RemoteFiles;
 
-use Satellite\EnvReader;
-use Satellite\Singleton;
+use Eighteen73\Satellite\EnvReader;
+use Eighteen73\Satellite\Singleton;
 use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
 
