@@ -49,7 +49,7 @@ class MailCatcher extends Singleton {
 	 * @return bool
 	 */
 	private function is_safe_environment(): bool {
-		return WP_ENV === 'development';
+		return in_array( wp_get_environment_type(), [ 'development', 'local' ], true );
 	}
 
 	/**

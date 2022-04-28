@@ -2,7 +2,7 @@ These instructions assume you are using [Nebula](https://github.com/eighteen73/n
 
 ## RemoteFiles
 
-This plugin will remote-load uploaded files without having to sync them to your development environment. Note this only works when `WP_ENV=development` and will silently deactivate when that is not the case, or when the following config is not in place.
+This plugin will remote-load uploaded files without having to sync them to your development environment. Note this only works when `wp_get_environment_type()` = `local|development` and will silently deactivate when that is not the case, or when the following config is not in place.
 
 You must have the following set in `config/environments/development.php` or `.env`. If both are set, `.env` will take precedence. This allows you to override project defaults without affecting other developers.
 
@@ -18,7 +18,7 @@ SATELLITE_PRODUCTION_URL=https://example.com
 
 ## WP Command
 
-The command `wp satellite sync` can be used to update your local environment using remote content. This can only be run when `WP_ENV=development|staging`.
+The command `wp satellite sync` can be used to update your local environment using remote content. This can only be run when `wp_get_environment_type()` = `local|development|staging`.
 
 You must have the following set in `config/environments/(development|staging).php`, or `.env`. If both are set, `.env` will take precedence. This allows you to override project defaults without affecting other developers.
 

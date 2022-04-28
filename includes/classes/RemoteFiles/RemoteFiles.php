@@ -30,7 +30,7 @@ class RemoteFiles extends Singleton {
 	 */
 	public function setup() {
 		// Development only
-		if ( WP_ENV !== 'development' ) {
+		if ( !$this->is_safe_environment() ) {
 			return;
 		}
 
@@ -46,6 +46,15 @@ class RemoteFiles extends Singleton {
 		add_filter( 'the_content', array( $this, 'image_content' ) );
 		add_filter( 'the_content', array( $this, 'image_content_relative' ) );
 		add_filter( 'wp_get_attachment_url', array( $this, 'update_image_url' ) );
+	}
+
+	/**
+	 * Check if we're on a non-production environment.
+	 *
+	 * @return bool
+	 */
+	private function is_safe_environment(): bool {
+		return in_array( wp_get_environment_type(), [ 'development', 'local' ], true );
 	}
 
 	/**

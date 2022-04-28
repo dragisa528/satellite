@@ -30,7 +30,7 @@ class Sync {
 
 	public function run( $args, $assoc_args ) {
 		if ( ! $this->is_safe_environment() ) {
-			WP_CLI::error( 'This can only be run in a development and staging environments. Check your WP_ENV setting.' );
+			WP_CLI::error( 'This can only be run in a development and staging environments. Check your wp_get_environment_type() setting.' );
 		}
 
 		if ( ! $this->has_all_settings() ) {
@@ -68,7 +68,7 @@ class Sync {
 	 * Development and staging use only
 	 */
 	private function is_safe_environment(): bool {
-		return WP_ENV === 'development' || WP_ENV === 'staging';
+		return in_array( wp_get_environment_type(), [ 'development', 'local', 'staging' ], true );
 	}
 
 	/**
