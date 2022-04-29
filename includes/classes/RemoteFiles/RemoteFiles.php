@@ -2,7 +2,6 @@
 
 namespace Eighteen73\Satellite\RemoteFiles;
 
-use Eighteen73\Satellite\EnvReader;
 use Eighteen73\Satellite\Singleton;
 use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
@@ -12,7 +11,6 @@ use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
  * http://www.github.com/billerickson/be-media-from-production
  */
 class RemoteFiles extends Singleton {
-	use EnvReader;
 
 	/**
 	 * Production URL
@@ -30,7 +28,7 @@ class RemoteFiles extends Singleton {
 	 */
 	public function setup() {
 		// Development only
-		if ( !$this->is_safe_environment() ) {
+		if ( ! $this->is_safe_environment() ) {
 			return;
 		}
 
@@ -204,7 +202,7 @@ class RemoteFiles extends Singleton {
 	 */
 	public function get_production_url(): ?string {
 		try {
-			$production_url = $this->env( 'SATELLITE_PRODUCTION_URL' ) ?: Config::get( 'SATELLITE_PRODUCTION_URL' );
+			$production_url = getenv( 'SATELLITE_PRODUCTION_URL' ) ?: Config::get( 'SATELLITE_PRODUCTION_URL' );
 		} catch ( UndefinedConfigKeyException $e ) {
 			return null;
 		}

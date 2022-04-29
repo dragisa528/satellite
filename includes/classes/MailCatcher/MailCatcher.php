@@ -2,7 +2,6 @@
 
 namespace Eighteen73\Satellite\MailCatcher;
 
-use Eighteen73\Satellite\EnvReader;
 use Eighteen73\Satellite\Singleton;
 
 /**
@@ -11,8 +10,6 @@ use Eighteen73\Satellite\Singleton;
  * routes to a local mailcatcher instance if available.
  */
 class MailCatcher extends Singleton {
-	use EnvReader;
-
 	private $host;
 	private $port;
 	private $encryption;
@@ -32,12 +29,12 @@ class MailCatcher extends Singleton {
 	 * Constructor.
 	 */
 	public function setup() {
-		$this->host       = $this->env( 'SATELLITE_SMTP_HOST' ) ?? '127.0.0.1';
-		$this->port       = $this->env( 'SATELLITE_SMTP_PORT' ) ?? 1025;
-		$this->encryption = $this->env( 'SATELLITE_SMTP_ENCRYPTION' ) ?? false;
-		$this->auth       = $this->env( 'SATELLITE_SMTP_AUTH' ) ?? false;
-		$this->username   = $this->env( 'SATELLITE_SMTP_USERNAME' ) ?? false;
-		$this->Password   = $this->env( 'SATELLITE_SMTP_PASSWORD' ) ?? false;
+		$this->host       = getenv( 'SATELLITE_SMTP_HOST' ) ?: '127.0.0.1';
+		$this->port       = getenv( 'SATELLITE_SMTP_PORT' ) ?: 1025;
+		$this->encryption = getenv( 'SATELLITE_SMTP_ENCRYPTION' ) ?: false;
+		$this->auth       = getenv( 'SATELLITE_SMTP_AUTH' ) ?: false;
+		$this->username   = getenv( 'SATELLITE_SMTP_USERNAME' ) ?: false;
+		$this->Password   = getenv( 'SATELLITE_SMTP_PASSWORD' ) ?: false;
 
 		add_action( 'phpmailer_init', [ $this, 'phpmailer_init' ], 999 );
 		add_action( 'admin_init', [ $this, 'disable_plugins' ], 999 );

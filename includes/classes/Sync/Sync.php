@@ -2,14 +2,11 @@
 
 namespace Eighteen73\Satellite\Sync;
 
-use Eighteen73\Satellite\EnvReader;
 use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
 use WP_CLI;
 
 class Sync {
-	use EnvReader;
-
 	private array $options = [
 		'database'         => false,
 		'uploads'          => false,
@@ -76,16 +73,16 @@ class Sync {
 	 */
 	private function has_all_settings(): bool {
 		try {
-			$this->settings['ssh_host'] = $this->env( 'SATELLITE_SSH_HOST' ) ?: Config::get( 'SATELLITE_SSH_HOST' );
-			$this->settings['ssh_user'] = $this->env( 'SATELLITE_SSH_USER' ) ?: Config::get( 'SATELLITE_SSH_USER' );
-			$this->settings['ssh_path'] = $this->env( 'SATELLITE_SSH_PATH' ) ?: Config::get( 'SATELLITE_SSH_PATH' );
+			$this->settings['ssh_host'] = getenv( 'SATELLITE_SSH_HOST' ) ?: Config::get( 'SATELLITE_SSH_HOST' );
+			$this->settings['ssh_user'] = getenv( 'SATELLITE_SSH_USER' ) ?: Config::get( 'SATELLITE_SSH_USER' );
+			$this->settings['ssh_path'] = getenv( 'SATELLITE_SSH_PATH' ) ?: Config::get( 'SATELLITE_SSH_PATH' );
 		} catch ( UndefinedConfigKeyException $e ) {
 			return false;
 		}
 
 		// Special case for SSH port
 		try {
-			$ssh_port                   = $this->env( 'SATELLITE_SSH_PORT' ) ?: Config::get( 'SATELLITE_SSH_PORT' );
+			$ssh_port                   = getenv( 'SATELLITE_SSH_PORT' ) ?: Config::get( 'SATELLITE_SSH_PORT' );
 			$this->settings['ssh_port'] = strval( $ssh_port );
 			if ( ! preg_match( '/^[0-9]+$/', $this->settings['ssh_port'] ) ) {
 				$this->settings['ssh_port'] = null;
@@ -109,8 +106,8 @@ class Sync {
 		// Plugin (de)activations
 		$activated_plugins = $deactivated_plugins = null;
 
-		if ( $this->env( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' ) ) {
-			$activated_plugins = $this->env( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' );
+		if ( getenv( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' ) ) {
+			$activated_plugins = getenv( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' ) ?:;
 		} else {
 			try {
 				$activated_plugins = Config::get( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' );
@@ -124,8 +121,8 @@ class Sync {
 		}
 		$this->settings['plugins']['activate'] = $activated_plugins;
 
-		if ( $this->env( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' ) ) {
-			$deactivated_plugins = $this->env( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' );
+		if ( getenv( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' ) ) {
+			$deactivated_plugins = getenv( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' ) ?:;
 		} else {
 			try {
 				$deactivated_plugins = Config::get( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' );
