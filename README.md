@@ -1,5 +1,15 @@
 These instructions assume you are using [Nebula](https://github.com/eighteen73/nebula) but that is not a prerequisite of the module so adapt the following as necessary.
 
+## Site Installation Script
+
+Setting up an existing website is a common requirement and, assuming your .env file has the necessary SSH settings, Satellite has a shell script to assist by doing initial website install and DB sync from the remote server.
+
+```bash
+./web/app/mu-plugins/satellite/scripts/install-from-remote.sh
+```
+
+Once this has been run once you can use the regular sync via `wp` as documented below.
+
 ## RemoteFiles
 
 This plugin will remote-load uploaded files without having to sync them to your development environment. Note this only works when `wp_get_environment_type()` = `local|development` and will silently deactivate when that is not the case, or when the following config is not in place.
