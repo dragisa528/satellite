@@ -25,6 +25,8 @@ class Sync {
 		],
 	];
 
+	private bool $has_pv = false;
+
 	public function run( $args, $assoc_args ) {
 		if ( ! $this->is_safe_environment() ) {
 			WP_CLI::error( 'This can only be run in a development and staging environments. Check your wp_get_environment_type() setting.' );
@@ -33,6 +35,8 @@ class Sync {
 		if ( ! $this->has_all_settings() ) {
 			WP_CLI::error( 'You are missing some config settings in your environment. Please refer to the plugin\'s README.md.' );
 		}
+
+		$this->check_for_pv();
 
 		if ( ! $this->has_remote_access() ) {
 			WP_CLI::error( 'Cannot access remote website. Please check your connection settings.' );
@@ -97,22 +101,16 @@ class Sync {
 			}
 		}
 
-		// Check for PV
-		$this->settings['has_pv'] = ! empty( `which pv` );
-		if ( ! $this->settings['has_pv'] ) {
-			WP_CLI::warning( "You may wish to install 'pv' to see progress when running this command." );
-		}
-
 		// Plugin (de)activations
-		$activated_plugins = $deactivated_plugins = null;
+		$activated_plugins   = null;
+		$deactivated_plugins = null;
 
 		if ( getenv( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' ) ) {
-			$activated_plugins = getenv( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' ) ?:;
+			$activated_plugins = getenv( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' );
 		} else {
 			try {
 				$activated_plugins = Config::get( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' );
 			} catch ( UndefinedConfigKeyException $e ) {
-				//
 			}
 		}
 		if ( $activated_plugins !== null ) {
@@ -122,12 +120,11 @@ class Sync {
 		$this->settings['plugins']['activate'] = $activated_plugins;
 
 		if ( getenv( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' ) ) {
-			$deactivated_plugins = getenv( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' ) ?:;
+			$deactivated_plugins = getenv( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' );
 		} else {
 			try {
 				$deactivated_plugins = Config::get( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' );
 			} catch ( UndefinedConfigKeyException $e ) {
-				//
 			}
 		}
 		if ( $deactivated_plugins !== null ) {
@@ -137,6 +134,13 @@ class Sync {
 		$this->settings['plugins']['deactivate'] = $deactivated_plugins;
 
 		return true;
+	}
+
+	private function check_for_pv() {
+		$this->has_pv = ! empty( `which pv` );
+		if ( ! $this->has_pv ) {
+			WP_CLI::warning( "You may wish to install 'pv' to see progress when running this command." );
+		}
 	}
 
 	private function get_options( $assoc_args ) {
@@ -178,8 +182,8 @@ class Sync {
 	private function fetch_database() {
 		$this->print_action_title( 'Fetching database' );
 
-		$pipe    = $this->settings['has_pv'] ? ' | pv | ' : ' | ';
 		$command = "{$this->settings['ssh_command']} \"bash -c \\\"cd {$this->settings['ssh_path']} && ./vendor/bin/wp db export --quiet --single-transaction - | gzip -cf\\\"\" {$pipe} gunzip -c | ./vendor/bin/wp db import --quiet -";
+		$pipe    = $this->has_pv ? ' | pv | ' : ' | ';
 		system( $command );
 	}
 
