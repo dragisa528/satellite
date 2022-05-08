@@ -30,6 +30,9 @@ class Sync {
 
 	private bool $has_pv = false;
 
+	private string $local_wp  = '';
+	private string $remote_wp = '';
+
 	public function run( $args, $assoc_args ) {
 		if ( ! $this->is_safe_environment() ) {
 			WP_CLI::error( 'This can only be run in a development and staging environments. Check your wp_get_environment_type() setting.' );
@@ -40,10 +43,13 @@ class Sync {
 		}
 
 		$this->check_for_pv();
+		$this->find_local_wp();
 
 		if ( ! $this->has_remote_access() ) {
 			WP_CLI::error( 'Cannot access remote website. Please check your connection settings.' );
 		}
+
+		$this->find_remote_wp();
 
 		$this->get_options( $assoc_args );
 
@@ -146,6 +152,41 @@ class Sync {
 		}
 	}
 
+	private function find_local_wp() {
+		// Possible `wp` locations, with the most preferable ones first
+		$possible_paths = [
+			'./vendor/bin/wp',
+			'wp',
+		];
+		foreach ( $possible_paths as $path ) {
+			if ( shell_exec( "which '{$path}'" ) !== null ) {
+				$this->local_wp = $path;
+				return;
+			}
+		}
+	}
+
+	private function find_remote_wp() {
+		// Possible `wp` locations, with the most preferable ones first
+		$possible_paths = [
+			"{$this->settings['ssh_path']}/vendor/bin/wp",
+			'wp',
+		];
+		foreach ( $possible_paths as $path ) {
+			// Try remote WP-CLI
+			$command            = "{$this->settings['ssh_command']} \"bash -c \\\"test -f {$this->remote_wp} && echo true || echo false\\\"\"";
+			$live_server_status = exec( $command );
+			if ( $live_server_status === 'true' ) {
+				$this->remote_wp = $path;
+				break;
+			}
+		}
+
+		if ( ! $this->remote_wp ) {
+			WP_CLI::error( "Cannot find WP-CLI at {$this->settings['ssh_user']}@{$this->settings['ssh_host']}" );
+		}
+	}
+
 	private function get_options( $assoc_args ) {
 		$true_values = [ true, 'true', 1, '1', 'yes' ];
 		if ( isset( $assoc_args['database'] ) ) {
@@ -159,18 +200,11 @@ class Sync {
 	private function has_remote_access(): bool {
 		$this->settings['ssh_command'] = "ssh -q -p {$this->settings['ssh_port']} {$this->settings['ssh_user']}@{$this->settings['ssh_host']}";
 
-		# Try SSH
+		// Try SSH
 		$command            = "{$this->settings['ssh_command']} exit; echo $?";
 		$live_server_status = exec( $command );
 		if ( $live_server_status === '255' ) {
 			WP_CLI::error( "Cannot connect to {$this->settings['ssh_user']}@{$this->settings['ssh_host']} over SSH" );
-		}
-
-		# Try remote WP-CLI
-		$command            = "{$this->settings['ssh_command']} \"bash -c \\\"test -f {$this->settings['ssh_path']}/vendor/bin/wp && echo true || echo false\\\"\"";
-		$live_server_status = exec( $command );
-		if ( $live_server_status !== 'true' ) {
-			WP_CLI::error( "Cannot find WP-CLI at {$this->settings['ssh_user']}@{$this->settings['ssh_host']}" );
 		}
 
 		return true;
@@ -185,8 +219,8 @@ class Sync {
 	private function fetch_database() {
 		$this->print_action_title( 'Fetching database' );
 
-		$command = "{$this->settings['ssh_command']} \"bash -c \\\"cd {$this->settings['ssh_path']} && ./vendor/bin/wp db export --quiet --single-transaction - | gzip -cf\\\"\" {$pipe} gunzip -c | ./vendor/bin/wp db import --quiet -";
 		$pipe    = $this->has_pv ? ' | pv | ' : ' | ';
+		$command = "{$this->settings['ssh_command']} \"bash -c \\\"cd {$this->settings['ssh_path']} && {$this->remote_wp} db export --quiet --single-transaction - | gzip -cf\\\"\" {$pipe} gunzip -c | {$this->local_wp} db import --quiet -";
 		system( $command );
 	}
 
@@ -214,7 +248,7 @@ class Sync {
 		foreach ( $this->settings['plugins']['activate'] as $plugin ) {
 			if ( $this->is_plugin_installed( $plugin ) ) {
 				if ( ! $this->is_plugin_active( $plugin ) ) {
-					$command = "wp plugin activate {$plugin}";
+					$command = "{$this->local_wp} plugin activate {$plugin}";
 					system( $command );
 				} else {
 					WP_CLI::warning( "Plugin {$plugin} is already active" );
@@ -235,7 +269,7 @@ class Sync {
 		foreach ( $this->settings['plugins']['deactivate'] as $plugin ) {
 			if ( $this->is_plugin_installed( $plugin ) ) {
 				if ( $this->is_plugin_active( $plugin ) ) {
-					$command = "wp plugin deactivate {$plugin}";
+					$command = "{$this->local_wp} plugin deactivate {$plugin}";
 					system( $command );
 				} else {
 					WP_CLI::warning( "Plugin {$plugin} is already inactive" );
