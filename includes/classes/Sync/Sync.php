@@ -2,11 +2,14 @@
 
 namespace Eighteen73\Satellite\Sync;
 
+use Eighteen73\Satellite\Environment;
 use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
 use WP_CLI;
 
 class Sync {
+	use Environment;
+
 	private array $options = [
 		'database'         => false,
 		'uploads'          => false,
@@ -69,7 +72,7 @@ class Sync {
 	 * Development and staging use only
 	 */
 	private function is_safe_environment(): bool {
-		return in_array( wp_get_environment_type(), [ 'development', 'local', 'staging' ], true );
+		return in_array( $this->environment(), [ 'development', 'local', 'staging' ], true );
 	}
 
 	/**

@@ -2,6 +2,7 @@
 
 namespace Eighteen73\Satellite\RemoteFiles;
 
+use Eighteen73\Satellite\Environment;
 use Eighteen73\Satellite\Singleton;
 use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
@@ -11,6 +12,8 @@ use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
  * http://www.github.com/billerickson/be-media-from-production
  */
 class RemoteFiles extends Singleton {
+
+	use Environment;
 
 	/**
 	 * Production URL
@@ -38,12 +41,12 @@ class RemoteFiles extends Singleton {
 		}
 
 		// Update Image URLs
-		add_filter( 'wp_get_attachment_image_src', array( $this, 'image_src' ) );
-		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'image_attr' ), 99 );
-		add_filter( 'wp_prepare_attachment_for_js', array( $this, 'image_js' ), 10, 3 );
-		add_filter( 'the_content', array( $this, 'image_content' ) );
-		add_filter( 'the_content', array( $this, 'image_content_relative' ) );
-		add_filter( 'wp_get_attachment_url', array( $this, 'update_image_url' ) );
+		add_filter( 'wp_get_attachment_image_src', [ $this, 'image_src' ] );
+		add_filter( 'wp_get_attachment_image_attributes', [ $this, 'image_attr' ], 99 );
+		add_filter( 'wp_prepare_attachment_for_js', [ $this, 'image_js' ], 10, 3 );
+		add_filter( 'the_content', [ $this, 'image_content' ] );
+		add_filter( 'the_content', [ $this, 'image_content_relative' ] );
+		add_filter( 'wp_get_attachment_url', [ $this, 'update_image_url' ] );
 	}
 
 	/**
@@ -52,7 +55,7 @@ class RemoteFiles extends Singleton {
 	 * @return bool
 	 */
 	private function is_safe_environment(): bool {
-		return in_array( wp_get_environment_type(), [ 'development', 'local' ], true );
+		return in_array( $this->environment(), [ 'development', 'local' ], true );
 	}
 
 	/**
@@ -130,7 +133,7 @@ class RemoteFiles extends Singleton {
 		preg_match_all( $regex, $content, $matches );
 
 		foreach ( $matches[0] as $url ) {
-			$url     = str_replace( "\"", "", $url );
+			$url     = str_replace( '"', '', $url );
 			$new_url = $this->update_image_url_relative( $url );
 			$content = str_replace( $url, $new_url, $content );
 		}

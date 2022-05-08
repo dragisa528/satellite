@@ -2,6 +2,7 @@
 
 namespace Eighteen73\Satellite\MailCatcher;
 
+use Eighteen73\Satellite\Environment;
 use Eighteen73\Satellite\Singleton;
 
 /**
@@ -10,6 +11,9 @@ use Eighteen73\Satellite\Singleton;
  * routes to a local mailcatcher instance if available.
  */
 class MailCatcher extends Singleton {
+
+	use Environment;
+
 	private $host;
 	private $port;
 	private $encryption;
@@ -46,7 +50,7 @@ class MailCatcher extends Singleton {
 	 * @return bool
 	 */
 	private function is_safe_environment(): bool {
-		return in_array( wp_get_environment_type(), [ 'development', 'local' ], true );
+		return in_array( $this->environment(), [ 'development', 'local' ], true );
 	}
 
 	/**
@@ -74,7 +78,6 @@ class MailCatcher extends Singleton {
 	 * @return void
 	 */
 	public function disable_plugins() {
-
 		if ( ! $this->is_safe_environment() ) {
 			return;
 		}
