@@ -34,7 +34,7 @@ You must have the following set in `config/environments/(development|staging).ph
 
 ```php
 Config::define( 'SATELLITE_SSH_HOST', 'website.example.com' );
-Config::define( 'SATELLITE_SSH_HOST', 123 ); // if not port 22
+Config::define( 'SATELLITE_SSH_PORT', 123 ); // if not port 22
 Config::define( 'SATELLITE_SSH_USER', 'username' );
 Config::define( 'SATELLITE_SSH_PATH', '/path/to/remote/website' );
 ```
@@ -43,7 +43,7 @@ or
 
 ```dotenv
 SATELLITE_SSH_HOST=website.example.com
-SATELLITE_SSH_HOST=123 # if not port 22
+SATELLITE_SSH_PORT=123 # if not port 22
 SATELLITE_SSH_USER=username
 SATELLITE_SSH_PATH=/path/to/remote/website
 ```
