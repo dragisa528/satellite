@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2befb01ab580c1a1428165ffa6297097",
+    "content-hash": "2cb61aed660d933bd94200d8abcd373f",
     "packages": [
         {
             "name": "mustache/mustache",
@@ -181,6 +181,81 @@
             "time": "2022-04-15T08:08:08+00:00"
         },
         {
+            "name": "wp-cli/db-command",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wp-cli/db-command.git",
+                "reference": "f032f6183caadded884a8e493b9f39f05aff8cf3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wp-cli/db-command/zipball/f032f6183caadded884a8e493b9f39f05aff8cf3",
+                "reference": "f032f6183caadded884a8e493b9f39f05aff8cf3",
+                "shasum": ""
+            },
+            "require": {
+                "wp-cli/wp-cli": "^2.5"
+            },
+            "require-dev": {
+                "wp-cli/entity-command": "^1.3 || ^2",
+                "wp-cli/wp-cli-tests": "^3.1"
+            },
+            "default-branch": true,
+            "type": "wp-cli-package",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                },
+                "bundled": true,
+                "commands": [
+                    "db",
+                    "db clean",
+                    "db create",
+                    "db drop",
+                    "db reset",
+                    "db check",
+                    "db optimize",
+                    "db prefix",
+                    "db repair",
+                    "db cli",
+                    "db query",
+                    "db export",
+                    "db import",
+                    "db search",
+                    "db tables",
+                    "db size",
+                    "db columns"
+                ]
+            },
+            "autoload": {
+                "files": [
+                    "db-command.php"
+                ],
+                "psr-4": {
+                    "": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel Bachhuber",
+                    "email": "daniel@runcommand.io",
+                    "homepage": "https://runcommand.io"
+                }
+            ],
+            "description": "Performs basic database operations using credentials stored in wp-config.php.",
+            "homepage": "https://github.com/wp-cli/db-command",
+            "support": {
+                "issues": "https://github.com/wp-cli/db-command/issues",
+                "source": "https://github.com/wp-cli/db-command/tree/master"
+            },
+            "time": "2022-05-09T20:06:50+00:00"
+        },
+        {
             "name": "wp-cli/mustangostang-spyc",
             "version": "0.6.3",
             "source": {
@@ -291,12 +366,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/wp-cli.git",
-                "reference": "f94e77d4563c66c04b582eb9fa8b4652b11ed0c2"
+                "reference": "4b446e100398c5774bf2a244f69465ccd65deaa8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/wp-cli/zipball/f94e77d4563c66c04b582eb9fa8b4652b11ed0c2",
-                "reference": "f94e77d4563c66c04b582eb9fa8b4652b11ed0c2",
+                "url": "https://api.github.com/repos/wp-cli/wp-cli/zipball/4b446e100398c5774bf2a244f69465ccd65deaa8",
+                "reference": "4b446e100398c5774bf2a244f69465ccd65deaa8",
                 "shasum": ""
             },
             "require": {
@@ -355,7 +430,7 @@
                 "issues": "https://github.com/wp-cli/wp-cli/issues",
                 "source": "https://github.com/wp-cli/wp-cli"
             },
-            "time": "2022-01-26T00:41:26+00:00"
+            "time": "2022-05-09T14:21:23+00:00"
         }
     ],
     "packages-dev": [
@@ -440,12 +515,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/eighteen73/phpcs-composer.git",
-                "reference": "49204d69ef78d4441786b1bcedaa3e6fbbcbef69"
+                "reference": "9b2d47aa0ca3c9be2e74b4d6bcfac3d065907754"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eighteen73/phpcs-composer/zipball/49204d69ef78d4441786b1bcedaa3e6fbbcbef69",
-                "reference": "49204d69ef78d4441786b1bcedaa3e6fbbcbef69",
+                "url": "https://api.github.com/repos/eighteen73/phpcs-composer/zipball/9b2d47aa0ca3c9be2e74b4d6bcfac3d065907754",
+                "reference": "9b2d47aa0ca3c9be2e74b4d6bcfac3d065907754",
                 "shasum": ""
             },
             "require": {
@@ -474,7 +549,7 @@
             "support": {
                 "source": "https://github.com/eighteen73/phpcs-composer/tree/main"
             },
-            "time": "2022-04-25T15:04:46+00:00"
+            "time": "2022-04-27T12:17:42+00:00"
         },
         {
             "name": "phpcompatibility/php-compatibility",
@@ -654,12 +729,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "b314140057170a81075556a71764f2f302e3b8be"
+                "reference": "96b0866e57b00a91efb608d1938d9505c06b3fb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/b314140057170a81075556a71764f2f302e3b8be",
-                "reference": "b314140057170a81075556a71764f2f302e3b8be",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/96b0866e57b00a91efb608d1938d9505c06b3fb9",
+                "reference": "96b0866e57b00a91efb608d1938d9505c06b3fb9",
                 "shasum": ""
             },
             "require": {
@@ -703,7 +778,7 @@
                 "source": "https://github.com/squizlabs/PHP_CodeSniffer",
                 "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
             },
-            "time": "2022-04-18T00:25:09+00:00"
+            "time": "2022-05-18T05:35:53+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
@@ -761,6 +836,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "wp-cli/wp-cli": 20,
+        "wp-cli/db-command": 20,
         "eighteen73/phpcs-composer": 20
     },
     "prefer-stable": false,
