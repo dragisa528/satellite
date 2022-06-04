@@ -1,4 +1,9 @@
 <?php
+/**
+ * An environment reader trait for wide installation support
+ *
+ * @package         Satellite
+ */
 
 namespace Eighteen73\Satellite;
 

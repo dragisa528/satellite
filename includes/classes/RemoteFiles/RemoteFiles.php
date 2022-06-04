@@ -1,4 +1,9 @@
 <?php
+/**
+ * Hotlink to uploaded files from a remote website
+ *
+ * @package         Satellite
+ */
 
 namespace Eighteen73\Satellite\RemoteFiles;
 
@@ -17,17 +22,23 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Production URL
+	 *
+	 * @var string|null
 	 */
 	public ?string $production_url = null;
 
 	/**
 	 * Holds list of upload directories
 	 * Can set manually here, or allow function below to automatically create it
+	 *
+	 * @var array
 	 */
 	public array $directories = [];
 
 	/**
-	 * Primary constructor.
+	 * Primary constructor
+	 *
+	 * @return void
 	 */
 	public function setup() {
 		// Development only
@@ -60,8 +71,12 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Modify Main Image URL
+	 *
+	 * @param array $image The image
+	 *
+	 * @return mixed
 	 */
-	public function image_src( $image ) {
+	public function image_src( array $image ) {
 		if ( empty( $image ) ) {
 			return $image;
 		}
@@ -75,6 +90,10 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Modify Image Attributes
+	 *
+	 * @param array $attr The image attributes
+	 *
+	 * @return array
 	 */
 	public function image_attr( array $attr ): array {
 
@@ -92,6 +111,10 @@ class RemoteFiles extends Singleton {
 	/**
 	 * Modify Image for Javascript
 	 * Primarily used for media library
+	 *
+	 * @param array $response The image response
+	 *
+	 * @return array
 	 */
 	public function image_js( array $response ): array {
 
@@ -108,6 +131,10 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Modify Images in Content
+	 *
+	 * @param string $content HTML content
+	 *
+	 * @return string
 	 */
 	public function image_content( string $content ): string {
 		$upload_locations = wp_upload_dir();
@@ -127,6 +154,10 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Modify Images in Content
+	 *
+	 * @param string $content HTML content
+	 *
+	 * @return string
 	 */
 	public function image_content_relative( string $content ): string {
 		$regex = '/\"\/app\/uploads[^\" ]+/i';
@@ -143,6 +174,10 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Convert a URL to a local filename
+	 *
+	 * @param string $url Image URL
+	 *
+	 * @return string
 	 */
 	public function local_filename( string $url ): string {
 		$upload_locations = wp_upload_dir();
@@ -152,6 +187,10 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Determine if local image exists
+	 *
+	 * @param string $url Image URL
+	 *
+	 * @return bool
 	 */
 	public function local_image_exists( string $url ): bool {
 		return file_exists( $this->local_filename( $url ) );
@@ -159,6 +198,10 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Update Image URL
+	 *
+	 * @param string $image_url Image URL
+	 *
+	 * @return string
 	 */
 	public function update_image_url( string $image_url ): string {
 
@@ -180,6 +223,10 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Update Image URL
+	 *
+	 * @param string $image_url Image URL
+	 *
+	 * @return string
 	 */
 	public function update_image_url_relative( string $image_url ): string {
 
@@ -202,6 +249,8 @@ class RemoteFiles extends Singleton {
 
 	/**
 	 * Return the production URL
+	 *
+	 * @return string|null
 	 */
 	public function get_production_url(): ?string {
 		try {

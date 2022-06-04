@@ -1,4 +1,9 @@
 <?php
+/**
+ * Singleton definition for this plugin's classes
+ *
+ * @package Satellite
+ */
 
 namespace Eighteen73\Satellite;
 

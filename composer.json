@@ -1,25 +1,29 @@
 {
-    "name": "eighteen73/satellite",
-    "description": "A collection of developer tools for WordPress projects",
-    "type": "wordpress-muplugin",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Eighteen73\\Satellite\\": "includes/classes/"
-        }
-    },
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">=7.4",
-        "wp-cli/wp-cli": "2.7.x-dev",
-        "wp-cli/db-command": "2.x-dev"
-    },
-    "require-dev": {
-        "eighteen73/phpcs-composer": "dev-main"
-    },
-    "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        }
+  "name": "eighteen73/satellite",
+  "description": "A collection of developer tools for WordPress projects",
+  "type": "wordpress-muplugin",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Eighteen73\\Satellite\\": "includes/classes/"
     }
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.4",
+    "wp-cli/db-command": "2.x-dev"
+  },
+  "require-dev": {
+    "eighteen73/phpcs-composer": "dev-main"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "scripts": {
+    "test": [
+      "phpcs"
+    ]
+  }
 }

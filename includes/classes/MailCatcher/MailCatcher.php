@@ -1,9 +1,15 @@
 <?php
+/**
+ * Use a local mailcatcher so messages never leave this environment
+ *
+ * @package         Satellite
+ */
 
 namespace Eighteen73\Satellite\MailCatcher;
 
 use Eighteen73\Satellite\Environment;
 use Eighteen73\Satellite\Singleton;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * Local Mail Catcher class.
@@ -14,15 +20,52 @@ class MailCatcher extends Singleton {
 
 	use Environment;
 
+	/**
+	 * SMTP hostname or IP
+	 *
+	 * @var string
+	 */
 	private $host;
+
+	/**
+	 * SMTP port
+	 *
+	 * @var int
+	 */
 	private $port;
+
+	/**
+	 * SMTP encryption type
+	 *
+	 * @var string
+	 */
 	private $encryption;
+
+	/**
+	 * Is auth enabled
+	 *
+	 * @var bool
+	 */
 	private $auth;
+
+	/**
+	 * SMTP username
+	 *
+	 * @var string
+	 */
 	private $username;
+
+	/**
+	 * SMTP password
+	 *
+	 * @var string
+	 */
 	private $password;
 
 	/**
 	 * Plugins that should be disabled.
+	 *
+	 * @var array
 	 */
 	private $plugins = [
 		'wp-mail-smtp/wp_mail_smtp.php',
@@ -38,7 +81,7 @@ class MailCatcher extends Singleton {
 		$this->encryption = getenv( 'SATELLITE_SMTP_ENCRYPTION' ) ?: false;
 		$this->auth       = getenv( 'SATELLITE_SMTP_AUTH' ) ?: false;
 		$this->username   = getenv( 'SATELLITE_SMTP_USERNAME' ) ?: false;
-		$this->Password   = getenv( 'SATELLITE_SMTP_PASSWORD' ) ?: false;
+		$this->password   = getenv( 'SATELLITE_SMTP_PASSWORD' ) ?: false;
 
 		add_action( 'phpmailer_init', [ $this, 'phpmailer_init' ], 999 );
 		add_action( 'admin_init', [ $this, 'disable_plugins' ], 999 );
@@ -56,12 +99,12 @@ class MailCatcher extends Singleton {
 	/**
 	 * Sets wp_mail() to use PHPMailer as the mailer with SMTP settings.
 	 *
-	 * @param PHPMailer $phpmailer
+	 * @param PHPMailer $phpmailer The PHPMailer instance
 	 *
 	 * @return void
 	 */
-	public function phpmailer_init( \PHPMailer\PHPMailer\PHPMailer $phpmailer ) {
-
+	public function phpmailer_init( PHPMailer $phpmailer ) {
+		// phpcs:disable WordPress.NamingConventions.ValidVariableName -- these class properties are not our code
 		$phpmailer->isSMTP();
 		$phpmailer->Host       = $this->host;
 		$phpmailer->Port       = $this->port;
@@ -69,6 +112,7 @@ class MailCatcher extends Singleton {
 		$phpmailer->SMTPAuth   = $this->auth;
 		$phpmailer->Username   = $this->username;
 		$phpmailer->Password   = $this->password;
+		// phpcs:enable
 	}
 
 	/**

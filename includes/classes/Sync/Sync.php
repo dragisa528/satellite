@@ -1,4 +1,9 @@
 <?php
+/**
+ * Sync from a remote website
+ *
+ * @package         Satellite
+ */
 
 namespace Eighteen73\Satellite\Sync;
 
@@ -7,9 +12,17 @@ use Roots\WPConfig\Config;
 use Roots\WPConfig\Exceptions\UndefinedConfigKeyException;
 use WP_CLI;
 
+/**
+ * Sync from a remote website
+ */
 class Sync {
 	use Environment;
 
+	/**
+	 * Which features should be run
+	 *
+	 * @var array
+	 */
 	private array $options = [
 		'database'         => false,
 		'uploads'          => false,
@@ -17,6 +30,11 @@ class Sync {
 		'inactive_plugins' => true,
 	];
 
+	/**
+	 * Various command settings
+	 *
+	 * @var array
+	 */
 	private array $settings = [
 		'ssh_host' => null,
 		'ssh_port' => '22',
@@ -28,12 +46,36 @@ class Sync {
 		],
 	];
 
+	/**
+	 * Is the pv command available
+	 *
+	 * @var bool
+	 */
 	private bool $has_pv = false;
 
-	private string $local_wp  = '';
+	/**
+	 * Path to local wp
+	 *
+	 * @var string
+	 */
+	private string $local_wp = '';
+
+	/**
+	 * Path to remote wp
+	 *
+	 * @var string
+	 */
 	private string $remote_wp = '';
 
-	public function run( $args, $assoc_args ) {
+	/**
+	 * The command run by CLI
+	 *
+	 * @param array $args User arguments
+	 * @param array $assoc_args User arguments
+	 *
+	 * @return void
+	 */
+	public function run( array $args, array $assoc_args ) {
 		if ( ! $this->is_safe_environment() ) {
 			WP_CLI::error( 'This can only be run in a development and staging environments. Check your wp_get_environment_type() setting.' );
 		}
@@ -120,6 +162,7 @@ class Sync {
 			try {
 				$activated_plugins = Config::get( 'SATELLITE_SYNC_ACTIVATE_PLUGINS' );
 			} catch ( UndefinedConfigKeyException $e ) {
+				// Do nothing
 			}
 		}
 		if ( $activated_plugins !== null ) {
@@ -134,6 +177,7 @@ class Sync {
 			try {
 				$deactivated_plugins = Config::get( 'SATELLITE_SYNC_DEACTIVATE_PLUGINS' );
 			} catch ( UndefinedConfigKeyException $e ) {
+				// Do nothing
 			}
 		}
 		if ( $deactivated_plugins !== null ) {
@@ -145,13 +189,23 @@ class Sync {
 		return true;
 	}
 
+	/**
+	 * Check it the pv command is available
+	 *
+	 * @return void
+	 */
 	private function check_for_pv() {
-		$this->has_pv = ! empty( `which pv` );
+		$this->has_pv = ! empty( exec( 'which pv' ) );
 		if ( ! $this->has_pv ) {
 			WP_CLI::warning( "You may wish to install 'pv' to see progress when running this command." );
 		}
 	}
 
+	/**
+	 * Check it the local wp command is available and where it's located
+	 *
+	 * @return void
+	 */
 	private function find_local_wp() {
 		// Possible `wp` locations, with the most preferable ones first
 		$possible_paths = [
@@ -159,13 +213,19 @@ class Sync {
 			'wp',
 		];
 		foreach ( $possible_paths as $path ) {
-			if ( shell_exec( "which '{$path}'" ) !== null ) {
+			if ( exec( "which '{$path}'" ) !== null ) {
 				$this->local_wp = $path;
+
 				return;
 			}
 		}
 	}
 
+	/**
+	 * Check it the remote wp command is available and where it's located
+	 *
+	 * @return void
+	 */
 	private function find_remote_wp() {
 		// Possible `wp` locations, with the most preferable ones first
 		$possible_paths = [
@@ -187,7 +247,14 @@ class Sync {
 		}
 	}
 
-	private function get_options( $assoc_args ) {
+	/**
+	 * Get the user's command arguments
+	 *
+	 * @param array $assoc_args User arguments
+	 *
+	 * @return void
+	 */
+	private function get_options( array $assoc_args ) {
 		$true_values = [ true, 'true', 1, '1', 'yes' ];
 		if ( isset( $assoc_args['database'] ) ) {
 			$this->options['database'] = in_array( $assoc_args['database'], $true_values, true );
@@ -197,6 +264,11 @@ class Sync {
 		}
 	}
 
+	/**
+	 * Can the remote website be accessed
+	 *
+	 * @return bool
+	 */
 	private function has_remote_access(): bool {
 		$this->settings['ssh_command'] = "ssh -q -p {$this->settings['ssh_port']} {$this->settings['ssh_user']}@{$this->settings['ssh_host']}";
 
@@ -210,12 +282,24 @@ class Sync {
 		return true;
 	}
 
+	/**
+	 * Reusable title output for CLI feedback
+	 *
+	 * @param string $title Title text
+	 *
+	 * @return void
+	 */
 	private function print_action_title( string $title ) {
 		WP_CLI::line( WP_CLI::colorize( '%b' ) );
 		WP_CLI::line( strtoupper( $title ) );
 		WP_CLI::line( WP_CLI::colorize( str_pad( '', strlen( $title ), '~' ) . '%n' ) );
 	}
 
+	/**
+	 * Overwrite the local database using the remote one
+	 *
+	 * @return void
+	 */
 	private function fetch_database() {
 		$this->print_action_title( 'Fetching database' );
 
@@ -224,6 +308,11 @@ class Sync {
 		system( $command );
 	}
 
+	/**
+	 * Put Stripe in test mode if applicable
+	 *
+	 * @return void
+	 */
 	private function enable_stripe_test_mode() {
 		if ( $this->is_plugin_installed_and_active( 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php' ) ) {
 			WP_CLI::line( 'Enabling Stripe test mode' );
@@ -233,11 +322,21 @@ class Sync {
 		}
 	}
 
+	/**
+	 * Download remote uploaded files
+	 *
+	 * @return void
+	 */
 	private function fetch_uploads() {
 		$this->print_action_title( 'Fetching uploads' );
 		WP_CLI::line( WP_CLI::colorize( '%y// todo%n' ) );
 	}
 
+	/**
+	 * Activate named plugins
+	 *
+	 * @return void
+	 */
 	private function activate_plugins() {
 		if ( empty( $this->settings['plugins']['activate'] ) ) {
 			return;
@@ -259,6 +358,11 @@ class Sync {
 		}
 	}
 
+	/**
+	 * Deactivate named plugins
+	 *
+	 * @return void
+	 */
 	private function deactivate_plugins() {
 		if ( empty( $this->settings['plugins']['deactivate'] ) ) {
 			return;
@@ -280,13 +384,27 @@ class Sync {
 		}
 	}
 
-	private function is_plugin_installed( $plugin_slug ): bool {
+	/**
+	 * Check if a plugin is installed
+	 *
+	 * @param string $plugin_slug Plugin name
+	 *
+	 * @return bool
+	 */
+	private function is_plugin_installed( string $plugin_slug ): bool {
 		$installed_plugins = get_plugins();
 
 		return array_key_exists( $plugin_slug, $installed_plugins ) || in_array( $plugin_slug, $installed_plugins, true );
 	}
 
-	private function is_plugin_active( $plugin_slug ): bool {
+	/**
+	 * Check if a plugin is enabled
+	 *
+	 * @param string $plugin_slug Plugin name
+	 *
+	 * @return bool
+	 */
+	private function is_plugin_active( string $plugin_slug ): bool {
 		if ( is_plugin_active( $plugin_slug ) ) {
 			return true;
 		}
@@ -294,7 +412,14 @@ class Sync {
 		return false;
 	}
 
-	private function is_plugin_installed_and_active( $plugin_slug ): bool {
+	/**
+	 * Check if a plugin is installed and enabled
+	 *
+	 * @param string $plugin_slug Plugin name
+	 *
+	 * @return bool
+	 */
+	private function is_plugin_installed_and_active( string $plugin_slug ): bool {
 		return $this->is_plugin_installed( $plugin_slug ) && $this->is_plugin_installed( $plugin_slug );
 	}
 }
