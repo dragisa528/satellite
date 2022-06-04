@@ -11,7 +11,7 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=7.4",
-    "wp-cli/db-command": "2.x-dev"
+    "wp-cli/db-command": "^2.0"
   },
   "require-dev": {
     "eighteen73/phpcs-composer": "dev-main"
