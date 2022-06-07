@@ -11,10 +11,10 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=7.4",
-    "wp-cli/db-command": "^2.0"
+    "wp-cli/db-command": "^1.3|^2.0"
   },
   "require-dev": {
-    "eighteen73/phpcs-composer": "dev-main"
+    "eighteen73/phpcs-composer": "^v1.0"
   },
   "config": {
     "allow-plugins": {
