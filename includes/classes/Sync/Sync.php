@@ -210,6 +210,7 @@ class Sync {
 		// Possible `wp` locations, with the most preferable ones first
 		$possible_paths = [
 			'./vendor/bin/wp',
+			'/usr/local/bin/wp',
 			'wp',
 		];
 		foreach ( $possible_paths as $path ) {
@@ -230,11 +231,12 @@ class Sync {
 		// Possible `wp` locations, with the most preferable ones first
 		$possible_paths = [
 			"{$this->settings['ssh_path']}/vendor/bin/wp",
+			'/usr/local/bin/wp',
 			'wp',
 		];
 		foreach ( $possible_paths as $path ) {
 			// Try remote WP-CLI
-			$command            = "{$this->settings['ssh_command']} \"bash -c \\\"test -f {$this->remote_wp} && echo true || echo false\\\"\"";
+			$command            = "{$this->settings['ssh_command']} \"bash -c \\\"test -f {$path} && echo true || echo false\\\"\"";
 			$live_server_status = exec( $command );
 			if ( $live_server_status === 'true' ) {
 				$this->remote_wp = $path;
