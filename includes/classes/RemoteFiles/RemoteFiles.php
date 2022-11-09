@@ -72,12 +72,12 @@ class RemoteFiles extends Singleton {
 	/**
 	 * Modify Main Image URL
 	 *
-	 * @param array $image The image
+	 * @param array|false $image The image
 	 *
 	 * @return mixed
 	 */
-	public function image_src( array $image ) {
-		if ( empty( $image ) ) {
+	public function image_src( $image ) {
+		if ( $image === false || empty( $image ) ) {
 			return $image;
 		}
 
