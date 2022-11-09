@@ -22,89 +22,14 @@ The plugin loads configuration from environment settings. There is no UI and set
 
 You may store config in your website's environment settings file (e.g. `config/environments/development.php`) if you want to share it with orther developers, or in your `.env` file to keep it private. If config is stored in both places your `.env` file will take precedence.
 
-This file's examples show configuration in `.env` format but it can be adjusted as follows of putting it into a evironment settings file. I.e. `SATELLITE_SSH_HOST=example.com` would be changed to `Config::define( 'SATELLITE_SSH_HOST', 'website.example.com' )`.
+This file's examples show configuration in `.env` format but it can be adjusted as follows of putting it into a evironment settings file. I.e. `SATELLITE_PRODUCTION_URL=example.com` would be changed to `Config::define( 'SATELLITE_PRODUCTION_URL', 'website.example.com' )`.
 
 Feature specific configuration is mentioned in their descriptions below. 
 
 ## Features
 
-- [Shell Script: Initialise a local site](#init-local-site)
-- [WP Command: Sync from remote website](#sync)
 - [Feature: Use remote files](#remote-files)
 - [Feature: Mail catcher](#mail-catcher)
-
-___
-
-<a name="init-local-site"></a>
-### Shell Script: Initialise a local site
-
-#### Purpose
-
-Given a freshly cloned website, this grabs a remote database via SSH so it can quicky get up and running for local development.
-
-#### Config
-
-```ini
-SATELLITE_SSH_HOST=website.example.com
-SATELLITE_SSH_PORT=123 # if not port 22
-SATELLITE_SSH_USER=username
-SATELLITE_SSH_PATH=/path/to/remote/website
-```
-
-#### Usage
-
-```shell
-./web/app/mu-plugins/satellite/scripts/install-from-remote.sh
-```
-
-Once this has been run once you can use the regular `wp satelllite sync` command as documented below.
-
-___
-
-<a name="sync"></a>
-### WP Command: Sync from remote website
-
-#### Purpose
-
-The command `wp satellite sync` can be used to update your local environment from remote content. This can only be run when `wp_get_environment_type()` = `local|development|staging`.
-
-#### Config
-
-The minimum configuration for this is exacty the same as the `install-from-remote.sh` command described above.
-
-```ini
-SATELLITE_SSH_HOST=website.example.com
-SATELLITE_SSH_PORT=123 # if not port 22
-SATELLITE_SSH_USER=username
-SATELLITE_SSH_PATH=/path/to/remote/website
-```
-
-You can also add a list of plugins to automatically activate/deactivate each time the command is run. 
-
-```ini
-SATELLITE_SYNC_ACTIVATE_PLUGINS=plugin1,plugin2
-SATELLITE_SYNC_DEACTIVATE_PLUGINS=plugin3
-```
-
-#### Usage
-
-The command can run in a few different modes as follows:
-
-```shell
-# Simple, just applies plugin overrides
-wp satellite sync
-
-# Database mode, downloads a fresh copy of the remove database (overwriting all local data) and applies plugin overrides
-wp satellite sync --database
-
-# Uploads mode, downloads a fresh copy of uploads directory (overwriting all local files) and applies plugin overrides
-wp satellite sync --uploads
-
-# All of the above
-wp satellite sync --database --uploads
-```
-
-Note that `--uploads` is usually unnecessary if remote files are enabled as specified below.
 
 ___
 
@@ -155,3 +80,4 @@ Note that is plugin automatically disables some commonly used mail plugins, nota
 
 - wp-mail-smtp
 - easy-wp-smtp
+- mailgun
