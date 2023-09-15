@@ -3,8 +3,8 @@
  * Plugin Name:     Satellite
  * Plugin URI:      https://github.com/eighteen73/satellite
  * Description:     A collection of developer tools for WordPress projects
- * Author:          Orphans Web Team
- * Author URI:      https://eighteen73.co.u
+ * Author:          eighteen73
+ * Author URI:      https://eighteen73.co.uk
  * Update URI:      https://github.com/eighteen73/satellite
  * Text Domain:     satellite
  * Domain Path:     /languages
@@ -20,21 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-spl_autoload_register(
-	function ( $class_name ) {
-		$path_parts = explode( '\\', $class_name );
-
-		if ( ! empty( $path_parts ) ) {
-			$package = $path_parts[0];
-
-			unset( $path_parts[0] );
-
-			if ( 'Orbit' === $package ) {
-				require_once __DIR__ . '/includes/classes/' . implode( '/', $path_parts ) . '.php';
-			}
-		}
-	}
-);
+require_once 'autoload.php';
 
 RemoteFiles::instance()->setup();
 MailCatcher::instance()->setup();
