@@ -3,26 +3,21 @@
   "description": "A collection of developer tools for WordPress projects",
   "type": "wordpress-muplugin",
   "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "Eighteen73\\Satellite\\": "includes/classes/"
-    }
-  },
-  "minimum-stability": "dev",
-  "require": {
-    "php": ">=7.4"
-  },
-  "require-dev": {
-    "eighteen73/phpcs-composer": "^v1.0"
-  },
-  "config": {
-    "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
-    }
-  },
-  "scripts": {
-    "test": [
-      "phpcs"
-    ]
-  }
+	"minimum-stability": "stable",
+	"require": {
+		"php": ">=8.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Eighteen73\\Satellite\\": "includes/classes/"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"require-dev": {
+		"eighteen73/wordpress-coding-standards": "^2.0.0"
+	}
 }

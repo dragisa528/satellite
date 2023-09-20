@@ -1,8 +1,23 @@
 <?xml version="1.0"?>
-<ruleset name="Project Rules">
-	<rule ref="Eighteen73-WordPress-Default" />
+<ruleset name="Eighteen73-Satellite">
+	<description>Eighteen73 Satellite</description>
+
+	<!-- Scan all files in directory -->
 	<file>.</file>
-	<exclude-pattern>dist/</exclude-pattern>
-	<exclude-pattern>vendor/</exclude-pattern>
-	<exclude-pattern>tests/</exclude-pattern>
+	<exclude-pattern type="relative">lib/packages/*</exclude-pattern>
+
+	<!-- Scan only PHP files -->
+	<arg name="extensions" value="php"/>
+
+	<!-- Show colors in console -->
+	<arg value="-colors"/>
+
+	<!-- Show sniff codes in all reports -->
+	<arg value="ns"/>
+
+	<rule ref="Squiz.PHP.EmbeddedPhp">
+		<exclude name="Squiz.Commenting.FileComment.Missing"/>
+	</rule>
+
+	<rule ref="Eighteen73-WordPress-Default" />
 </ruleset>
